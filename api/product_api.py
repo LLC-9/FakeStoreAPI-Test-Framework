@@ -1,13 +1,12 @@
 import requests
+from base_api import BaseAPI
 
-class   ProductAPI:
-    def __init__(self):
-        self.base_url = "https://fakestoreapi.com"
+class   ProductAPI(BaseAPI):
 
     def get_all_products(self):
         """"获取所有商品列表接口"""
         url = f"{self.base_url}/products"
-        response = requests.get(url,proxies={"http":None,"https":None})
+        response = requests.get(url,proxies= self.proxies)
 
         products_list = response.json()
 

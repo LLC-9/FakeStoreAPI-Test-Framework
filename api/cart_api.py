@@ -1,24 +1,22 @@
 import requests
-
+from base_api import BaseAPI
 
 #创建加入购物车的类
-class CarAPI:
-    def __init__(self):
-        self.base_url = "https://fakestoreapi.com"
+class CarAPI(BaseAPI):
     def add_to_cart(self,token,user_id,product_id,quantity):
         url = f"{self.base_url}/carts"
         headers ={
             "Authorization": f"Bearer {token}"
         }
         payload = {
-            "userID": user_id,
+            "userId": user_id,
             "date":"2026-07-17",
             "products":[
             {"productId":product_id,"quantity":quantity}
         ]
       }
 #发送请求接口返回数据
-        response = requests.post(url, json=payload, headers=headers,proxies={"http": None, "https": None})
+        response = requests.post(url, json=payload, headers=headers,proxies=self.proxies)
         return response.status_code,response.json()
 #测试
 if __name__ == '__main__':
@@ -36,7 +34,7 @@ if __name__ == '__main__':
         print(f"商品id为:{t_product_id}")
         #调用测试加入购物车接口
         cart = CarAPI()
-        status_codes, cart_result = cart.add_to_cart(token=token,user_id=5,product_id=t_product_id,quantity=1)
+        status_code, cart_result = cart.add_to_cart(token=token,user_id=5,product_id=t_product_id,quantity=1)
 
-        print(f"状态码为:{status_codes}\n,返回结果为：\n{cart_result}")
+        print(f"状态码为:{status_code}\n,返回结果为：\n{cart_result}")
 

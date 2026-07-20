@@ -1,11 +1,8 @@
 import requests
+from base_api import BaseAPI
 
 
-class UserAPI:
-
-    def __init__(self):
-
-        self.base_url = "https://fakestoreapi.com"
+class UserAPI(BaseAPI):
 
     def login(self, username, password):
         """用户登录接口"""
@@ -15,7 +12,7 @@ class UserAPI:
             "password": password
         }
 
-        response = requests.post(url, json=payload, proxies={"http": None, "https": None})
+        response = requests.post(url, json=payload, proxies=self.proxies)
 
         token = response.json()["token"]
 
