@@ -1,5 +1,5 @@
 import requests
-from base_api import BaseAPI
+from api.base_api import BaseAPI
 
 #创建加入购物车的类
 class CarAPI(BaseAPI):
