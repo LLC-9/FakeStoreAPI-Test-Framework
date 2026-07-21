@@ -1,7 +1,11 @@
 import pytest
-from api.cart_api import CarAPI
+import yaml
 
-@pytest.mark.parametrize("quantity",[1,3,5])
+from api.cart_api import CarAPI
+from until.until_cart_quantities import until_cart_quantities
+
+yaml_quantities = until_cart_quantities("data/cart.yaml")
+@pytest.mark.parametrize("quantity",yaml_quantities["cart_quantities"])
 def test_cart(quantity,get_token,get_product):
     "测试用例：用户成功将商品加入购物车"
     print(f"--当前数量为{quantity},测试开始--")
