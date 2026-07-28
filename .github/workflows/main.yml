@@ -1,0 +1,72 @@
+name: API AutoTest CI
+
+# 触发条件：当推送到github的main时自动触发
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # ==========================================
+  # 阶段一：先锋小队 - 在本地跑代码，绕过防火墙
+  # ==========================================
+  test_on_local:
+    runs-on: self-hosted    # 调度你的本地电脑执行
+    steps:
+      - name: 1. 拉取最新代码
+        uses: actions/checkout@v4   # 升级到 v4 最新版
+
+      - name: 2. 配置 Python 3.9 环境
+        uses: actions/setup-python@v5   # 升级到 v5 最新版
+        with:
+          python-version: '3.9'
+
+      - name: 3. 安装依赖包
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 4. 执行测试并生成 Allure 原始数据
+        env:
+          PYTHONPATH: .
+        run: pytest tests/ -s -v --alluredir=./allure-results
+        continue-on-error: true
+
+      - name: 5. 【接力棒】将测试数据上传到云端中转站
+        uses: actions/upload-artifact@v4   # ！！！修复核心：升级到 v4 最新版 ！！！
+        with:
+          name: allure-results-artifact
+          path: ./allure-results
+
+  # ==========================================
+  # 阶段二：后勤大队 - 在云端生成网页并部署
+  # ==========================================
+  generate_and_deploy_report:
+    needs: test_on_local    # 必须等待阶段一跑完
+    runs-on: ubuntu-latest  # 切换回云端 Linux 电脑
+    steps:
+      - name: 1. 拉取最新代码
+        uses: actions/checkout@v4   # 升级到 v4 最新版
+
+      - name: 2. 【接力棒】从中转站下载刚才生成的原始数据
+        uses: actions/download-artifact@v4   # ！！！修复核心：升级到 v4 最新版 ！！！
+        with:
+          name: allure-results-artifact
+          path: ./allure-results
+
+      - name: 3. 组装 Allure 历史测试报告
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+
+      - name: 4. 部署到 GitHub Pages (生成在线网址)
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
