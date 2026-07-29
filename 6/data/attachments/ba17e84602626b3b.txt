@@ -1,3 +1,0 @@
-[32mINFO    [0m FakeStore_AutoTest:test_cart.py:20 --当前数量为5,测试开始--
-[32mINFO    [0m FakeStore_AutoTest:test_cart.py:30 接口请求完成，返回状态码:201
-[32mINFO    [0m FakeStore_AutoTest:test_cart.py:37 数量为5的断言成功，状态码为201
