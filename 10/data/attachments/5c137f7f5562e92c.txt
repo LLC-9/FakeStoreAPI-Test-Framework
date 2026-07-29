@@ -1,0 +1,3 @@
+INFO     FakeStore_AutoTest:test_cart.py:20 --当前数量为1,测试开始--
+INFO     FakeStore_AutoTest:test_cart.py:30 接口请求完成，返回状态码:201
+INFO     FakeStore_AutoTest:test_cart.py:37 数量为1的断言成功，状态码为201
