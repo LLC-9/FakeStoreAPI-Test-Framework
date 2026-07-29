@@ -1,0 +1,4 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"测试用例：用户成功将商品加入购物车","0","test_cart[3]","tests","2026-07-29","broken","2026-07-29","","test_cart","",""
+"测试用例：用户成功将商品加入购物车","0","test_cart[5]","tests","2026-07-29","broken","2026-07-29","","test_cart","",""
+"测试用例：用户成功将商品加入购物车","0","test_cart[1]","tests","2026-07-29","broken","2026-07-29","","test_cart","",""
