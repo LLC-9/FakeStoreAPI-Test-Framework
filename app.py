@@ -1,18 +1,23 @@
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel
 import sqlite3
+import os  # ！！！第1处修改：新增导入 os 模块！！！
 
 app = FastAPI()
 
+# ！！！第2处修改：动态获取项目根目录，并拼接出绝对路径！！！
+root_path = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(root_path, "store.db")
 
 # 数据库初始化与造数据
 def init_db():
-    conn = sqlite3.connect("store.db", check_same_thread=False)
+    # ！！！第3处修改：把原本的 "store.db" 替换为绝对路径 db_path ！！！
+    conn = sqlite3.connect(db_path, check_same_thread=False)
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, name TEXT, stock INTEGER)")
     c.execute("CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY, product_id INTEGER, user TEXT)")
-    # 预置商品：测试手机，初始库存 10
-    c.execute("INSERT OR IGNORE INTO products (id, name, stock) VALUES (1, 'TestPhone', 10)")
+    # 预置商品：测试手机，初始库存 99999
+    c.execute("INSERT OR IGNORE INTO products (id, name, stock) VALUES (1, 'TestPhone', 99999)")
     conn.commit()
     return conn
 

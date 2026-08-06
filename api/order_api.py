@@ -1,19 +1,22 @@
 import requests
 from api.base_api import BaseAPI
 
-import requests
-from api.base_api import BaseAPI
-
 class OrderAPI(BaseAPI):
+    def __init__(self):
+            super().__init__()
+
     def local_login(self):
-        url = f"{self.base_url}/login"
+        url = "http://127.0.0.1:8000/login"
+
+        print(f"【DEBUG 调试】当前拼出来的登录请求地址是: {url}")
+
         response = requests.post(url, proxies=self.proxies)
         if response.status_code not in [200,201]:
             raise Exception(f"失败，状态码为:{response.status_code}")
         return response.json()['token']
 
     def create_order(self, token,product_id):
-        url = f"{self.base_url}/order"
+        url = "http://127.0.0.1:8000/order"
         headers = {
             "token": token
         }

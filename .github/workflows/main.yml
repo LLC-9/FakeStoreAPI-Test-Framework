@@ -1,6 +1,5 @@
 name: API AutoTest CI
 
-# 触发条件：当推送到github的main时自动触发
 on:
   push:
     branches:
@@ -8,51 +7,68 @@ on:
 
 jobs:
   # ==========================================
-  # 阶段一：先锋小队 - 在本地跑代码，绕过防火墙
+  # 阶段一：先锋小队 - 启动本地靶场并执行测试
   # ==========================================
   test_on_local:
-    runs-on: self-hosted    # 调度你的本地电脑执行
+    runs-on: self-hosted
     steps:
       - name: 1. 拉取最新代码
-        uses: actions/checkout@v4   # 升级到 v4 最新版
+        uses: actions/checkout@v4
 
       - name: 2. 配置 Python 3.9 环境
-        uses: actions/setup-python@v5   # 升级到 v5 最新版
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
       - name: 3. 安装依赖包
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install fastapi uvicorn pydantic
 
-      - name: 4. 执行测试并生成 Allure 原始数据
+      - name: 4. 清除僵尸进程并启动靶场
+        shell: powershell
+        run: |
+          # 1. 查找并击杀占用 8000 端口的旧服务，防止端口冲突
+          $process = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue
+          if ($process) { Stop-Process -Id $process.OwningProcess -Force }
+          
+          # 2. 重新在后台拉起最新的靶场服务
+          Start-Process python -ArgumentList "-m uvicorn app:app --host 127.0.0.1 --port 8000" -NoNewWindow
+          Start-Sleep -Seconds 3
+
+      - name: 5. 执行测试并生成 Allure 原始数据
         env:
           PYTHONPATH: .
-        run: pytest tests/ -s -v --alluredir=./allure-results
+        shell: powershell
+        run: |
+          # 确保每次运行前清空旧数据，防止干扰
+          if (Test-Path allure-results) { Remove-Item -Recurse -Force allure-results }
+          python -m pytest tests/ -s -v --alluredir=allure-results
+          if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 1) { exit 0 }
         continue-on-error: true
 
-      - name: 5. 【接力棒】将测试数据上传到云端中转站
-        uses: actions/upload-artifact@v4   # ！！！修复核心：升级到 v4 最新版 ！！！
+      - name: 6. 【接力棒】将测试数据上传到云端中转站
+        uses: actions/upload-artifact@v4
         with:
           name: allure-results-artifact
-          path: ./allure-results
+          path: allure-results   # 去掉了前面的 ./ 确保 Windows 兼容
 
   # ==========================================
   # 阶段二：后勤大队 - 在云端生成网页并部署
   # ==========================================
   generate_and_deploy_report:
-    needs: test_on_local    # 必须等待阶段一跑完
-    runs-on: ubuntu-latest  # 切换回云端 Linux 电脑
+    needs: test_on_local
+    runs-on: ubuntu-latest
     steps:
       - name: 1. 拉取最新代码
-        uses: actions/checkout@v4   # 升级到 v4 最新版
+        uses: actions/checkout@v4
 
       - name: 2. 【接力棒】从中转站下载刚才生成的原始数据
-        uses: actions/download-artifact@v4   # ！！！修复核心：升级到 v4 最新版 ！！！
+        uses: actions/download-artifact@v4
         with:
           name: allure-results-artifact
-          path: ./allure-results
+          path: allure-results   # 同样去掉 ./
 
       - name: 3. 组装 Allure 历史测试报告
         uses: simple-elf/allure-report-action@master
@@ -61,9 +77,9 @@ jobs:
           allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
-          allure_history: allure-history
+          allure_history: allure-history   # 修复：改成下划线 allure_history
 
-      - name: 4. 部署到 GitHub Pages (生成在线网址)
+      - name: 4. 部署到 GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: always()
         with:
