@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"79c51a2a4d866293c671070cd9a2e29e","name":"本地Mock靶场核心业务","statistic":{"failed":1,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":1}},{"uid":"fe01f650bcbcae9901c4ffe041eaeda6","name":"FakeStore项目","statistic":{"failed":0,"broken":1,"skipped":0,"passed":0,"unknown":0,"total":1}}]}
