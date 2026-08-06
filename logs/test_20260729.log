@@ -7,3 +7,12 @@
 2026-07-29 11:02:59,966 - FakeStore_AutoTest - INFO - --当前数量为5,测试开始--
 2026-07-29 11:03:01,346 - FakeStore_AutoTest - INFO - 接口请求完成，返回状态码:201
 2026-07-29 11:03:01,346 - FakeStore_AutoTest - INFO - 数量为5的断言成功，状态码为201
+2026-07-29 14:57:10,640 - FakeStore_AutoTest - INFO - --当前数量为1,测试开始--
+2026-07-29 14:57:11,299 - FakeStore_AutoTest - INFO - 接口请求完成，返回状态码:201
+2026-07-29 14:57:11,299 - FakeStore_AutoTest - INFO - 数量为1的断言成功，状态码为201
+2026-07-29 14:57:11,303 - FakeStore_AutoTest - INFO - --当前数量为3,测试开始--
+2026-07-29 14:57:11,954 - FakeStore_AutoTest - INFO - 接口请求完成，返回状态码:201
+2026-07-29 14:57:11,954 - FakeStore_AutoTest - INFO - 数量为3的断言成功，状态码为201
+2026-07-29 14:57:11,958 - FakeStore_AutoTest - INFO - --当前数量为5,测试开始--
+2026-07-29 14:57:12,770 - FakeStore_AutoTest - INFO - 接口请求完成，返回状态码:201
+2026-07-29 14:57:12,770 - FakeStore_AutoTest - INFO - 数量为5的断言成功，状态码为201

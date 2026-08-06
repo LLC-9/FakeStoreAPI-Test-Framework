@@ -11,7 +11,7 @@ class UserAPI(BaseAPI):
             "username": username,
             "password": password
         }
-        # 1. 加上伪装面具，假装是正常的谷歌浏览器，而不是没有感情的机器
+        # 1. 加上伪装面具，假装是正常的谷歌浏览器
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
